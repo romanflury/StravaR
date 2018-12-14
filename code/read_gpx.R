@@ -12,12 +12,6 @@ get_activity <- function(file) {
 # table(sapply(files, get_activity))
 #---------------------------------------------------------------------------------- #
 
-setClass("activity",
-         representation(type = "character", name = "character", lat = "numeric", lon = "numeric",
-                        distances = "numeric", elevations = "numeric", times = "POSIXct"),
-         prototype(type = NA_character_, name = NA_character_, lat = NULL, lon = NULL,
-                   distances = NULL, elevations = NULL, times = NULL))
-
 parse_gpx <- function(file) {
   # read gpx file and decompose XML tree
   gpxfile <- XML::htmlTreeParse(file, useInternalNodes = TRUE)
@@ -37,8 +31,9 @@ parse_gpx <- function(file) {
   activity_dists <- c(0, sp::spDists(x = cbind(lon, lat), longlat = TRUE, segments = TRUE))
   activity_times <- as.POSIXct(time, tz = "GMT", format = "%Y-%m-%dT%H:%M:%OS")
 
-  result <- new("activity", type = get_activity(file), name = activity_name, lat = lat, lon = lon, distances = activity_dists,
-                elevations = ele, times = activity_times)
+  result <- new("activity", type = get_activity(file), name = activity_name, lat = lat,
+                lon = lon, distances = activity_dists, elevations = ele, times = activity_times)
+
   return(result)
 }
 
