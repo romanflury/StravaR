@@ -1,0 +1,15 @@
+exportPattern("^[[:alpha:]]+")
+
+
+importFrom("methods", "new")
+
+importFrom("XML", "htmlTreeParse")
+importFrom("XML", "xpathSApply")
+importFrom("XML", "xmlValue")
+importFrom("XML", "xmlAttrs")
+
+importFrom("sp", "spDists")
+importFrom("sp", "SpatialPoints")
+importFrom("sp", "over")
+
+importFrom("rworldmap", "getMap")
