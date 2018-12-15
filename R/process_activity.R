@@ -1,7 +1,11 @@
-
+#' Calculate the time difference between measured points in an activity
+#'
+#' @param activity an object of S4 class activity.
+#' @return a numeric vecotor of the corresponding time differences.
+#'
+#' @export
 get_timediffs <- function(activity) {
-  if (class(activity) != "activity")
-    stop("invalid class for argument \"activity\"")
+  check_activity(activity)
 
   activity_timediffs <- sapply(1:(length(activity@times)-1), function(x) {
     as.numeric(difftime(activity@times[x+1], activity@times[x], units = "hours")) })
@@ -9,20 +13,48 @@ get_timediffs <- function(activity) {
   return(activity_timediffs)
 }
 
+#' Calculate the velocities (km/h) of an activity for every measured point.
+#' Using the distance devided by \code{\link{get_timediffs}}.
+#'
+#' @param activity an object of S4 class activity.
+#' @return the respective velocities.
+#'
+#' @export
 get_speeds <- function(activity) {
-  if (class(activity) != "activity")
-    stop("invalid class for argument \"activity\"")
+  check_activity(activity)
 
   return(activity@distances[-1]/get_timediffs(activity))
 }
 
-get_elevationlevel <- function(x, by = 100, levels = 3:30) {
-  return(factor(round(x@elevations/by), levels = levels))
+#' Catecorize the slot elevations from an S4 activity object into different levels.
+#'
+#' @param activity an object of S4 class activity.
+#' @param by numeric value to devide the elevations in meters.
+#'        By default \code{by = 100}.
+#' @param levels numeric vector to determine the corresponding levels.
+#'        By default \code{levels = 3:30}.
+#' @return the transfromed elevations slot.
+#'
+#' @export
+get_elevationlevel <- function(activity, by = 100, levels = 3:30) {
+  check_activity(activity)
+
+  return(factor(round(activity@elevations/by), levels = levels))
 }
 
+#' Determine the country(ies) of the lat/lon coordinates of a Strava activity
+#'
+#' @param activity an object of S4 class activity.
+#' @return character vector of the countries.
+#'
+#' @export
+#' @importFrom rworldmap getMap
+#' @importFrom sp SpatialPoints
+#' @importFrom sp CRS
+#' @importFrom sp proj4string
+#' @importFrom sp over
 get_countries <- function(activity) {
-  if (class(activity) != "activity")
-    stop("invalid class for argument \"activity\"")
+  check_activity(activity)
 
   locations <- cbind(activity@lon, activity@lat)
   countriesSP <- rworldmap::getMap(resolution = "low")
@@ -33,9 +65,16 @@ get_countries <- function(activity) {
   return(unique(indices$ADMIN))
 }
 
+#' Merge different objects of S4 class activtiy into one.
+#'
+#' @param list_activity a list of activty objects.
+#' @param name the name of the merged activity.
+#'        By default \code{name = "merged-activity"}.
+#' @return an object of S4 class activtiy.
+#'
+#' @export
 merge_activity <- function(list_activity, name = "merged-activity") {
-  sapply(list_activity, function(x) { if(class(x) != "activity") {
-    stop("invalid class for list entry in \"list_activity\"") } })
+  sapply(list_activity, check_activity)
 
   types <- unlist(sapply(list_activity, function(x) { x["type"] }))
   if(!all(types == types[1])) {
@@ -53,8 +92,8 @@ merge_activity <- function(list_activity, name = "merged-activity") {
       tmp <- vector(mode, l) }
     if (identical(mode, "POSIXct")) {
       tmp <- .POSIXct(character(l)) }
-
-    return(tmp[v_cumnmeas[x]:(v_cumnmeas[x+1]-1)] <- list_activity[[x]][slot]) }
+    return(tmp[v_cumnmeas[x]:(v_cumnmeas[x+1]-1)] <- list_activity[[x]][slot])
+  }
 
   newlat <- unlist(sapply(1:nactivities, c_activityslot, slot = "lat"))
   newlon <- unlist(sapply(1:nactivities, c_activityslot, slot = "lon"))
@@ -67,6 +106,3 @@ merge_activity <- function(list_activity, name = "merged-activity") {
              lon = newlon, distances = newdist, elevations = newelevations,
              times = newtimes))
 }
-
-
-
