@@ -20,7 +20,7 @@ l_a <- c(test, test2, test3, test4, test5, test6)
 test <- merge_activity(list_activity = l_a)
 
 
-
+test <- load_allactivities(merge = T)
 
 
 
