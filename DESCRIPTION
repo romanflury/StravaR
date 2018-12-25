@@ -6,12 +6,12 @@ Date: 2018-12-14
 Authors@R: c(person("Roman", "Flury", role = c("aut", "cre"),
                     email = "roman.flury@math.uzh.ch"))
 Depends:
-    R (>= 3.1),
+    R (>= 3.1)
 Imports:
     methods,
     XML,
     sp,
-    rworldmap
+    OpenStreetMap
 Suggests:
     knitr,
     rmarkdown
