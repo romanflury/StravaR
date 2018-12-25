@@ -20,7 +20,12 @@
 # test <- merge_activity(list_activity = l_a)
 #
 #
-# test <- load_allactivities(merge = T)
+# rm(list = ls())
+# options(device = "X11"); graphics.off()
+#
+# library(StravaR)
+# test <- load_activities(path = "../StravaR-code/activities/", merge = T)
+# plot_activity(test)
 #
 #
 #
