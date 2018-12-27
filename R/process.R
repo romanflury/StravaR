@@ -48,6 +48,7 @@ get_elevationlevel <- function(activity, by = 100, levels = 3:30) {
 #' @return character vector of the countries.
 #'
 #' @export
+#'
 #' @importFrom rworldmap getMap
 #' @importFrom sp SpatialPoints
 #' @importFrom sp CRS
