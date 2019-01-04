@@ -3,6 +3,7 @@
 \docType{methods}
 \name{lines,activity-method}
 \alias{lines,activity-method}
+\alias{lines,activity,activity-method}
 \title{plot a Strava activtiy on OpenStreetmap}
 \usage{
 \S4method{lines}{activity}(x)

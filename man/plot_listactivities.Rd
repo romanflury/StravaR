@@ -5,7 +5,7 @@
 \title{plot a list of Strava Strava activities}
 \usage{
 plot_listactivities(lactivity, ul, lr, osm_type = "stamen-watercolor",
-  padby = 0.01, ...)
+  padby = 0.01, lwd = 3, lty = 1, lcol = "black", ...)
 }
 \arguments{
 \item{lactivity}{a list of activity objects.}
@@ -14,9 +14,17 @@ plot_listactivities(lactivity, ul, lr, osm_type = "stamen-watercolor",
 
 \item{lr}{lowerright lat and long.}
 
-\item{osm_type}{one of the slot names, "name", "type", "lat", "lon", "distances", "elevations", "times".}
+\item{osm_type}{openstreetmap type, see \code{\link{openmap}} for possible values.}
 
 \item{padby}{pad upperleft and lowerright lat long points by this value.}
+
+\item{lwd}{line width.}
+
+\item{lty}{line type.}
+
+\item{lcol}{line color}
+
+\item{...}{additional arguments for \code{\link{plot.OpenStreetMap}}.}
 }
 \description{
 plot a list of Strava Strava activities

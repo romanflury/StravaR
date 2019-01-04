@@ -75,29 +75,6 @@ load_activities <- function(path = "activities/", type = "all", merge = FALSE, .
     types <- unlist(sapply(files, get_activitytype))
     files <- files[which(types == type)] }
 
-  # it is assumed, that each .gpx file defines one activity
-  list_activities <- sapply(files, function(x) {
-    tmppath <- paste0(path, x)
-    parse_gpx(tmppath) })
-
-  if (!merge)
-    return(list_activities)
-
-  return(merge_activity(list_activities, ...))
-}
-
-#' @export
-pload_activities <- function(path = "activities/", type = "all", merge = FALSE, ...) {
-  files <- list.files(path)
-
-  # remove not .gpx files
-  files <- grep(".gpx", files, value = TRUE)
-
-  # select for a certain activity type
-  if(!identical(type, "all")) {
-    types <- unlist(sapply(files, get_activitytype))
-    files <- files[which(types == type)] }
-
   no_cores <- parallel::detectCores() - 1
   # Initiate cluster
   cl <- parallel::makeCluster(no_cores)
@@ -107,31 +84,10 @@ pload_activities <- function(path = "activities/", type = "all", merge = FALSE, 
   list_activities <- parallel::parSapply(cl, files, function(x) {
     tmppath <- paste0(path, x)
     parse_gpx(tmppath) })
+  parallel::stopCluster(cl)
 
   if (!merge)
     return(list_activities)
 
   return(merge_activity(list_activities, ...))
 }
-
-
-
-#
-#
-# test <- sapply((lambda+1):(nn - lambda),
-#                function(x) {
-#                  parallel::parSapply(cl, (lambda+1):(mm - lambda),
-#                                      function(y) {
-#                                        xtmp <- seq(x-lambda, x+lambda)
-#                                        ytmp <- seq(y-lambda, y+lambda)
-#                                        tmp <- sampledata[xtmp, ytmp, ]
-#                                        tmpM <- cbind(c(tmp[,,1])[c(m_radiusindices)], c(tmp[,,2])[c(m_radiusindices)], c(tmp[,,3])[c(m_radiusindices)])
-#                                        tmpM <- tmpM[!rowSums(!is.finite(tmpM)),]               # only lines w/o NAs
-#
-#                                        switch (index,
-#                                                "mean" = tryCatch(mean(tmpM, na.rm = TRUE), error = function(e) { return(NA) } ),
-#                                                "richness" = tryCatch(geometry::convhulln(tmpM, options = 'FA')$vol, error = function(e) { return(NA) } ),
-#                                                "evenness" = tryCatch(FEve(tmpM), error = function(e) { return(NA) }),
-#                                                "divergence" = tryCatch(FDiv(tmpM), error = function(e) { return(NA) }) )
-#                                      }) }, simplify = TRUE)
-# parallel::stopCluster(cl)
